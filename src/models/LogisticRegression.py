@@ -65,6 +65,7 @@ def train_nltk_regression():
     neg = []
 
     for i in range(100000):
+        if i % 1000 == 0: print(i)
         neg.append([format_sentence(df.at[i, 'Negative_Review']), 'neg'])
         pos.append([format_sentence(df.at[i, 'Positive_Review']), 'pos'])
 
@@ -79,21 +80,19 @@ def train_nltk_regression():
     actual_result = []
 
     for i in range(len(test)):
-        print(test[i] + ' - ' + classifier.classify(test[i][0]))
+        # print(str(test[i][0]) + ' - ' + classifier.classify(test[i][0]))
         prediction_result.append(classifier.classify(test[i][0]))
         actual_result.append(test[i][1])
 
+    print(accuracy(classifier, test))
     print('\nConfusion matrix:\n', confusion_matrix(actual_result, prediction_result))
 
     save_model('NaiveBayes', classifier)
 
 
-def classify_nltk_regression(test_line='Wow! I love this Marco hotel, 10/10 would stay again'):
+def classify_nltk_regression(test_line='Wow! I love this hotel, 10/10 would stay again'):
     classifier = load_model('NaiveBayes')
     print(classifier.classify(format_sentence(test_line)))
-
-    prediction_result = []
-    actual_result = []
 
 
 def save_model(name, classifier):
@@ -113,4 +112,5 @@ def format_sentence(sentence):
     return({word: True for word in nltk.word_tokenize(sentence)})
 
 
-classify_nltk_regression('This hotel is so bad!')
+classify_nltk_regression('This hotel wasnt great')
+
