@@ -91,6 +91,7 @@ def train_nltk_regression():
 
 
 def classify_nltk_regression(test_line='Wow! I love this hotel, 10/10 would stay again'):
+    nltk.download('punkt')
     classifier = load_model('NaiveBayes')
     print(classifier.classify(format_sentence(test_line)))
 
@@ -112,5 +113,5 @@ def format_sentence(sentence):
     return({word: True for word in nltk.word_tokenize(sentence)})
 
 
-classify_nltk_regression('This hotel wasnt great')
+# classify_nltk_regression('This hotel great')
 
