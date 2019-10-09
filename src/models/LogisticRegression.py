@@ -12,6 +12,7 @@ from nltk.classify import NaiveBayesClassifier
 from nltk.classify.util import accuracy
 from sklearn.metrics import confusion_matrix
 import pickle
+import pandas as pd
 
 test = []
 
@@ -19,6 +20,8 @@ test = []
 def sklearn_regression():
     df = get_all_data()
     df = process_df(df)
+    pd.set_option('display.max_columns', None)
+    print(df)
     neg_list = list(df['Negative_Review'])
     pos_list = list(df['Positive_Review'])
 
@@ -61,6 +64,8 @@ def train_nltk_regression():
     nltk.download('punkt')
     df = get_all_data()
     df = process_df(df)
+    pd.set_option('display.max_columns', None)
+    print(df)
     pos = []
     neg = []
 
@@ -112,5 +117,6 @@ def format_sentence(sentence):
     return({word: True for word in nltk.word_tokenize(sentence)})
 
 
-classify_nltk_regression('This hotel wasnt great')
+classify_nltk_regression('all great')
+# train_nltk_regression()
 
