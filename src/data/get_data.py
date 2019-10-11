@@ -1,3 +1,5 @@
+from src.db import db_utils as db
+from src.data import process_df as pdf
 import pandas as pd
 from bs4 import BeautifulSoup
 import requests
@@ -32,3 +34,8 @@ def get_all_data():
     # own = get_own_reviews()
     return local
 
+
+def upload_data_to_db():
+    db.upload_to_db(pdf.process_df(get_all_data()))
+
+# upload_data_to_db()

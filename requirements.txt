@@ -3,3 +3,4 @@ bs4
 requests
 sklearn
 nltk
+pymysql
