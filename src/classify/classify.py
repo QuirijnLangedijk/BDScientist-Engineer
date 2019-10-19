@@ -1,6 +1,7 @@
 import pickle
 
-from src.models.naive_bayes import get_punkt, format_sentence
+from src.models.naive_bayes import get_punkt, format_sentence, train_nltk_nb
+from src.models.svm import train_svm
 
 
 def load_model(name):
@@ -37,5 +38,11 @@ def classify_all():
     ]
     classify_sentences_svm(sentences)
     classify_nltk_nb(sentences)
+
+
+def train_all():
+    train_nltk_nb()
+    train_svm()
+
 
 classify_all()

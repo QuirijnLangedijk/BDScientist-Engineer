@@ -78,5 +78,5 @@ def classify_sentences(sentences):
         print(classifier.predict(review_vector))
 
 
-train_svm()
+# train_svm()
 # classify_sentences(['very good hotel', 'very bad hotel', 'awful hotel'])

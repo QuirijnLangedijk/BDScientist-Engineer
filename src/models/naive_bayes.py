@@ -19,7 +19,7 @@ def train_nltk_nb():
     pos = []
     neg = []
 
-    for i in range(100000):
+    for i in range(df.shape[0]):
         if i % 1000 == 0:
             print(i)
         neg.append([format_sentence(df.at[i, 'Negative_Review']), 'neg'])
@@ -29,7 +29,7 @@ def train_nltk_nb():
     test = pos[int(.1 * len(pos)):] + neg[int(.1 * len(neg)):]
 
     classifier = NaiveBayesClassifier.train(training)
-    print(accuracy(classifier, test))
+
     # classifier.show_most_informative_features()
 
     prediction_result = []
