@@ -10,8 +10,8 @@ import pandas as pd
 test = []
 
 
-def train_nltk_regression():
-    nltk.download('punkt')
+def train_nltk_nb():
+    get_punkt()
     df = gd.get_local_dataset()
     df = process_df(df)
     pd.set_option('display.max_columns', None)
@@ -43,12 +43,12 @@ def train_nltk_regression():
     print(accuracy(classifier, test))
     print('\nConfusion matrix:\n', confusion_matrix(actual_result, prediction_result))
 
-    save_model('NaiveBayes', classifier)
+    save_model('trained_models/naive_bayes/NaiveBayes', classifier)
 
 
-def classify_nltk_regression(test_line='Wow! I love this hotel, 10/10 would stay again'):
-    nltk.download('punkt')
-    classifier = load_model('NaiveBayes')
+def classify_nltk_nb(test_line='Wow! I love this hotel, 10/10 would stay again'):
+    get_punkt()
+    classifier = load_model('trained_models/naive_bayes/NaiveBayes')
     print(classifier.classify(format_sentence(test_line)))
 
 
@@ -66,9 +66,17 @@ def load_model(name):
 
 
 def format_sentence(sentence):
-    return({word: True for word in nltk.word_tokenize(sentence)})
+    return {word: True for word in nltk.word_tokenize(sentence)}
 
 
-classify_nltk_regression('all great')
-# train_nltk_regression()
+def get_punkt():
+    try:
+        nltk.data.find('tokenizers/punkt')
+    except LookupError:
+        nltk.download('punkt')
+
+
+# train_nltk_nb()
+# classify_nltk_nb('very very bad hotel')
+
 

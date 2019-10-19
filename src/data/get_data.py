@@ -60,5 +60,3 @@ def upload_written_reviews():
 
 # upload_local()
 # upload_web_scraped()
-
-get_webscraped_data()
