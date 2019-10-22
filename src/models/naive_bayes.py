@@ -29,8 +29,7 @@ def train_nltk_nb():
     test = pos[int(.1 * len(pos)):] + neg[int(.1 * len(neg)):]
 
     classifier = NaiveBayesClassifier.train(training)
-
-    # classifier.show_most_informative_features()
+    classifier.show_most_informative_features()
 
     prediction_result = []
     actual_result = []

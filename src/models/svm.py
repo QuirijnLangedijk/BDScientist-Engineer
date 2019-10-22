@@ -1,5 +1,8 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 import pickle
+import time
+from sklearn import svm
+from sklearn.metrics import classification_report
 
 import src.data.get_data as gd
 from src.data.process_df import process_df
@@ -34,9 +37,6 @@ def train_svm():
     train_vectors = vectorizer.fit_transform(training_text)
     test_vectors = vectorizer.transform(test_text)
 
-    import time
-    from sklearn import svm
-    from sklearn.metrics import classification_report
     # Perform classification with SVM, kernel=linear
     classifier_linear = svm.SVC(kernel='linear')
     t0 = time.time()
