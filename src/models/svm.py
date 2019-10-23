@@ -1,10 +1,10 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
-import pickle
 import time
 from sklearn import svm
 from sklearn.metrics import classification_report
 
 import src.data.get_data as gd
+import src.utils.utils as utils
 from src.data.process_df import process_df
 
 
@@ -52,31 +52,6 @@ def train_svm():
     print('positive: ', report['pos'])
     print('negative: ', report['neg'])
 
-    save_model('trained_models/svm/vectorizer', vectorizer)
-    save_model('trained_models/svm/classifier', classifier_linear)
+    utils.save_model('trained_models/svm/vectorizer', vectorizer)
+    utils.save_model('trained_models/svm/classifier', classifier_linear)
 
-
-def save_model(name, classifier):
-    f = open(name + '.pickle', 'wb')
-    pickle.dump(classifier, f)
-    f.close()
-
-
-def load_model(name):
-    f = open(name + '.pickle', 'rb')
-    classifier = pickle.load(f)
-    f.close()
-    return classifier
-
-
-def classify_sentences(sentences):
-    vectorizer = load_model('trained_models/svm/vectorizer')
-    classifier = load_model('trained_models/svm/classifier')
-
-    for sentence in sentences:
-        review_vector = vectorizer.transform([sentence])
-        print(classifier.predict(review_vector))
-
-
-# train_svm()
-# classify_sentences(['very good hotel', 'very bad hotel', 'awful hotel'])

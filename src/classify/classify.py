@@ -1,19 +1,12 @@
-import pickle
-
 from src.models.naive_bayes import get_punkt, format_sentence, train_nltk_nb
 from src.models.svm import train_svm
-
-
-def load_model(name):
-    f = open(name + '.pickle', 'rb')
-    classifier = pickle.load(f)
-    f.close()
-    return classifier
+from src.models.logistic_regression import train_lr
+import src.utils.utils as utils
 
 
 def classify_sentences_svm(sentences):
-    vectorizer = load_model('../models/trained_models/svm/vectorizer')
-    classifier = load_model('../models/trained_models/svm/classifier')
+    vectorizer = utils.load_model('../models/trained_models/svm/vectorizer')
+    classifier = utils.load_model('../models/trained_models/svm/classifier')
 
     print('SVM: ')
     for sentence in sentences:
@@ -21,28 +14,41 @@ def classify_sentences_svm(sentences):
         print(classifier.predict(review_vector)[0] + ': ' + sentence)
 
 
-def classify_nltk_nb(sentences):
+def classify_nb(sentences):
     get_punkt()
+    classifier = utils.load_model('../models/trained_models/naive_bayes/NaiveBayes')
 
     print('\nNaive Bayes: ')
     for sentence in sentences:
-        classifier = load_model('../models/trained_models/naive_bayes/NaiveBayes')
         print(classifier.classify(format_sentence(sentence)) + ': ' + sentence)
+
+
+def classify_lg(sentences):
+    vectorizer = utils.load_model('../models/trained_models/logistic_regression/vectorizer')
+    classifier = utils.load_model('../models/trained_models/logistic_regression/classifier')
+
+    print('\nLogistic Regression: ')
+
+    for sentence in sentences:
+        review_vector = vectorizer.transform([sentence])
+        print(classifier.predict(review_vector)[0] + ': ' + sentence)
 
 
 def classify_all():
     sentences = [
         'This hotel was great! I would recommend staying here',
         'I didn\'t like this hotel at all, Im not coming back',
-        'Great hotel'
+        'The shower was broken'
     ]
     classify_sentences_svm(sentences)
-    classify_nltk_nb(sentences)
+    classify_nb(sentences)
+    classify_lg(sentences)
 
 
 def train_all():
     train_nltk_nb()
     train_svm()
+    train_lr()
 
 
 classify_all()

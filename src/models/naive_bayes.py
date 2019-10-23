@@ -1,11 +1,13 @@
 import src.data.get_data as gd
 from src.data.process_df import process_df
+import src.utils.utils as utils
+
 import nltk
 from nltk.classify import NaiveBayesClassifier
 from nltk.classify.util import accuracy
 from sklearn.metrics import confusion_matrix
-import pickle
 import pandas as pd
+
 
 test = []
 
@@ -14,8 +16,6 @@ def train_nltk_nb():
     get_punkt()
     df = gd.get_local_dataset()
     df = process_df(df)
-    pd.set_option('display.max_columns', None)
-    print(df)
     pos = []
     neg = []
 
@@ -42,26 +42,7 @@ def train_nltk_nb():
     print(accuracy(classifier, test))
     print('\nConfusion matrix:\n', confusion_matrix(actual_result, prediction_result))
 
-    save_model('trained_models/naive_bayes/NaiveBayes', classifier)
-
-
-def classify_nltk_nb(test_line='Wow! I love this hotel, 10/10 would stay again'):
-    get_punkt()
-    classifier = load_model('trained_models/naive_bayes/NaiveBayes')
-    print(classifier.classify(format_sentence(test_line)))
-
-
-def save_model(name, classifier):
-    f = open(name + '.pickle', 'wb')
-    pickle.dump(classifier, f)
-    f.close()
-
-
-def load_model(name):
-    f = open(name + '.pickle', 'rb')
-    classifier = pickle.load(f)
-    f.close()
-    return classifier
+    utils.save_model('trained_models/naive_bayes/NaiveBayes', classifier)
 
 
 def format_sentence(sentence):
@@ -73,9 +54,3 @@ def get_punkt():
         nltk.data.find('tokenizers/punkt')
     except LookupError:
         nltk.download('punkt')
-
-
-# train_nltk_nb()
-# classify_nltk_nb('very very bad hotel')
-
-
