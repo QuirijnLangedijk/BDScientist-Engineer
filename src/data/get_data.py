@@ -24,7 +24,8 @@ def get_local_dataset():
 def get_webscraped_data():
     positive_list, negative_list = [], []
 
-    for i in range(2):
+    for i in range(10):
+        print(i)
         page = requests.get('https://www.tripadvisor.com/Hotel_Review-g188590-d249326-Reviews-or' + str(i*5)
                             + '-Hotel_Arena-Amsterdam_North_Holland_Province.html#REVIEWS')
         if page.status_code == 200:
@@ -33,6 +34,7 @@ def get_webscraped_data():
             rating = soup.find_all('div', {'class': re.compile('hotels-review-list-parts-RatingLine__bubbles.+')})
             review = soup.find_all('q', {'class': re.compile('hotels-review-list-parts-ExpandableReview__reviewText.+')})
             for j in range(5):
+                '''
                 if (int(str(rating[j].span)[-11])) > 2:
                     positive_list.append({'Hotel_Name': 'Hotel Arena',
                                           'Positive_Review': str(review[j].span)[6:-7],
@@ -43,6 +45,11 @@ def get_webscraped_data():
                                           'Negative_Review': str(review[j].span)[6:-7],
                                           'Reviewer_Score': str(rating[j].span)[-11]
                                           })
+                '''
+                if (int(str(rating[j].span)[-11])) > 2:
+                    positive_list.append(str(review[j].span)[6:-7])
+                else:
+                    negative_list.append(str(review[j].span)[6:-7])
 
     '''
     list_with_all_reviews = []
@@ -111,16 +118,29 @@ def upload_local():
 
 def upload_web_scraped():
     reviews = get_webscraped_data()
-    #df = pd.DataFrame(np.column_stack([reviews[0], reviews[1]]),
-                      #columns=['Negative_Review', 'Positive_Review'])
-    #db.upload_to_db(df, 'WebScraped')
+    negative = reviews[0]
+    positive = reviews[1]
+    dict_1 = {
+        'Negative_Review': negative,
+        'Positive_Review': positive
+    }
+    df = pd.DataFrame.from_dict(dict_1, orient='index')
+    df = df.transpose()
+    print(df)
+    db.upload_to_db(df, 'WebScraped')
 
 
 def upload_written_reviews():
     db.upload_to_db(get_own_reviews(), 'Written')
 
 
-def get_all_data():
+def upload_all_data():
+    upload_local()
+    upload_web_scraped()
+    upload_written_reviews()
+
+
+def get_all_data_local():
     scraped = get_webscraped_data()
     negative_reviews = map(operator.itemgetter('Negative_Review'), scraped[0])
     positive_reviews = map(operator.itemgetter('Positive_Review'), scraped[1])
@@ -132,7 +152,32 @@ def get_all_data():
     df = df_local.append(df_scraped, ignore_index=True)
     df = df.append(df_written, ignore_index=True)
     pd.set_option('display.max_columns', None)
-    df = pdf.process_df(df)
+    return df
+
+
+def get_all_kaggle():
+    return db.get_from_db(f'CALL GetKaggleSet()')
+
+
+def get_all_scraped():
+    return db.get_from_db(f'CALL GetWebScrapedSet()')
+
+
+def get_all_written():
+    return db.get_from_db(f'CALL GetWrittenSet()')
+
+
+def get_all_data():
+    dataset = get_all_kaggle()
+    scraped = get_all_scraped()
+    written = get_all_written()
+    dataset = dataset.append(scraped)
+    dataset = dataset.append(written)
+    dataset.reset_index(drop=True, inplace=True)
+    print(dataset)
+    return dataset
 
 
 upload_web_scraped()
+
+
