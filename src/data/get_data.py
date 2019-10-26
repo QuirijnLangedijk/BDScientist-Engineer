@@ -6,15 +6,9 @@ import numpy as np
 from bs4 import BeautifulSoup
 import requests
 import re
-import operator
-
 import time
-
 from contextlib import closing
 from selenium.webdriver import Chrome
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
 
 
 def get_local_dataset():
@@ -24,77 +18,51 @@ def get_local_dataset():
 def get_webscraped_data():
     positive_list, negative_list = [], []
 
-    for i in range(10):
-        print(i)
-        page = requests.get('https://www.tripadvisor.com/Hotel_Review-g188590-d249326-Reviews-or' + str(i*5)
+    for i in range(208):
+        if i % 10 == 0:
+            print(i)
+        page = requests.get('https://www.tripadvisor.com/Hotel_Review-g188590-d249326-Reviews-or' + str(i * 5)
                             + '-Hotel_Arena-Amsterdam_North_Holland_Province.html#REVIEWS')
         if page.status_code == 200:
             soup = BeautifulSoup(page.content, 'html.parser')
             titles = soup.find_all('div', {'class': re.compile('hotels-review-list-parts-ReviewTitle__reviewTitle.+')})
             rating = soup.find_all('div', {'class': re.compile('hotels-review-list-parts-RatingLine__bubbles.+')})
-            review = soup.find_all('q', {'class': re.compile('hotels-review-list-parts-ExpandableReview__reviewText.+')})
+            review = soup.find_all('q',
+                                   {'class': re.compile('hotels-review-list-parts-ExpandableReview__reviewText.+')})
             for j in range(5):
-                '''
-                if (int(str(rating[j].span)[-11])) > 2:
-                    positive_list.append({'Hotel_Name': 'Hotel Arena',
-                                          'Positive_Review': str(review[j].span)[6:-7],
-                                          'Reviewer_Score': str(rating[j].span)[-11]
-                                          })
-                else:
-                    negative_list.append({'Hotel_Name': 'Hotel Arena',
-                                          'Negative_Review': str(review[j].span)[6:-7],
-                                          'Reviewer_Score': str(rating[j].span)[-11]
-                                          })
-                '''
                 if (int(str(rating[j].span)[-11])) > 2:
                     positive_list.append(str(review[j].span)[6:-7])
                 else:
                     negative_list.append(str(review[j].span)[6:-7])
 
-    '''
-    list_with_all_reviews = []
-    with closing(Chrome(executable_path='C:/Users/quiri/Desktop/BDScientist-Engineer/Downloads/chromedriver.exe')) as driver:
-        driver.get("https://uk.hotels.com/ho200999/hotel-arena-amsterdam-netherlands/?awc=8440_1571771494_f825cb913c5433a147a7d836133ba63a&locale=en_GB&pos=HCOM_UK&rffrid=aff.hcom.nl.011.000.324893.kwrd%3D8440_1571771494_f825cb913c5433a147a7d836133ba63a&wapb1=hotelcontentfeed")
-        for i in range(1):
-            button = driver.find_element_by_link_text("reviewTab=brand-reviews").click()
-            time.sleep(5)
-            # store it to string variable
-            page_source = driver.page_source
+    with closing(
+            Chrome(executable_path='C:/Users/quiri/Desktop/BDScientist-Engineer/Downloads/chromedriver.exe')) as driver:
+        driver.get("https://www.trivago.co.uk/?cpt2=47362%2F100&sharedcid=47362&tab=rating")
 
-            soup = BeautifulSoup(page_source, 'html.parser')
-            reviews = soup.find_all('div', {'class': 'description'})
-            scores = soup.find_all('div', {'class': 'rating-score'})
+        time.sleep(3)
+        button = driver.find_elements_by_class_name("tabs__label")
+        time.sleep(1)
+        button[3].click()
+        time.sleep(1)
+        see_more = driver.find_elements_by_class_name("td-underline--hover")[1].click()
+        time.sleep(2)
+        # store it to string variable
+        page_source = driver.page_source
 
-            print(reviews)
-            for k in range(len(reviews)):
-                if float(str(reviews[k].text)) > 5.5:
-                    print(scores[k])
-                    positive_list.append({'Hotel_Name': 'Via Amsterdam',
-                                          'Positive_Review': reviews[k].text,
-                                          'Reviewer_Score': scores[k].text})
-                else:
-                    negative_list.append({'Hotel_Name': 'Via Amsterdam',
-                                          'Negative_Review': reviews[k].text,
-                                          'Reviewer_Score': scores[k].text})
-    '''
+        soup = BeautifulSoup(page_source, 'html.parser')
+        reviews = soup.find_all('p', {'class': 'sl-review__summary'})
+        scores = soup.find_all('span', {'class': 'item-components__pillValue--4748f item-components__value-med--a26b7 item-components__pillValue--4748f'})
+        shortened = "..."
+        clean_reviews = [x for x in reviews if x.text[len(x.text)-4:len(x.text)] == "...." or not x.text[len(x.text)-3:len(x.text)] == shortened]
+
+        for k in range(len(clean_reviews)):
+            if scores[k].text != "/":
+                if float(scores[k].text) > 5.5:
+                    positive_list.append(str(reviews[k].text))
+                elif float(scores[k].text) < 5.5:
+                    negative_list.append(str(reviews[k].text))
+
     return [negative_list, positive_list]
-
-
-'''
-    page = requests.get("https://www.hostelworld.com/hosteldetails.php/Via-Amsterdam/Amsterdam/280631#reviews")
-    soup = BeautifulSoup(page.content, 'html.parser')
-    reviews = soup.find_all('div', {'class': 'notes'})
-    scores = soup.find_all('div', {'class': 'score'})
-    for k in range(reviews):
-        if scores[k] > 5.5:
-            positive_list.append({'Hotel_Name': 'Via Amsterdam',
-                                  'Positive_Review': reviews[k],
-                                  'Reviewer_Score': scores[k]})
-        else:
-            negative_list.append({'Hotel_Name': 'Via Amsterdam',
-                                  'Negative_Review': reviews[k],
-                                  'Reviewer_Score': scores[k]})
-'''
 
 
 def get_own_reviews():
@@ -126,7 +94,6 @@ def upload_web_scraped():
     }
     df = pd.DataFrame.from_dict(dict_1, orient='index')
     df = df.transpose()
-    print(df)
     db.upload_to_db(df, 'WebScraped')
 
 
@@ -138,21 +105,6 @@ def upload_all_data():
     upload_local()
     upload_web_scraped()
     upload_written_reviews()
-
-
-def get_all_data_local():
-    scraped = get_webscraped_data()
-    negative_reviews = map(operator.itemgetter('Negative_Review'), scraped[0])
-    positive_reviews = map(operator.itemgetter('Positive_Review'), scraped[1])
-
-    df_written = pd.DataFrame(get_own_reviews())
-    df_local = pd.DataFrame(get_local_dataset())
-    df_scraped = pd.DataFrame(np.column_stack(['Hotel Arena', negative_reviews, positive_reviews]),
-                              columns=['Hotel_Name', 'Negative_Review', 'Positive_Review'])
-    df = df_local.append(df_scraped, ignore_index=True)
-    df = df.append(df_written, ignore_index=True)
-    pd.set_option('display.max_columns', None)
-    return df
 
 
 def get_all_kaggle():
@@ -174,10 +126,4 @@ def get_all_data():
     dataset = dataset.append(scraped)
     dataset = dataset.append(written)
     dataset.reset_index(drop=True, inplace=True)
-    print(dataset)
     return dataset
-
-
-upload_web_scraped()
-
-

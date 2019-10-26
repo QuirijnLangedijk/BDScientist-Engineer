@@ -9,7 +9,7 @@ from src.data.process_df import process_df
 
 
 def train_svm():
-    df = gd.get_local_dataset()
+    df = gd.get_all_data()
     df = process_df(df)
 
     text_pos = []
@@ -19,9 +19,9 @@ def train_svm():
 
     for i in range(df.shape[0]):
         text_pos.append(df.at[i, 'Positive_Review'])
-        labels_pos.append('pos')
+        labels_pos.append('positive')
         text_neg.append(df.at[i, 'Negative_Review'])
-        labels_neg.append('neg')
+        labels_neg.append('negative')
 
     training_text = text_pos[:int((.8)*len(text_pos))] + text_neg[:int((.8)*len(text_neg))]
     training_labels = labels_pos[:int((.8)*len(labels_pos))] + labels_neg[:int((.8)*len(labels_neg))]
@@ -37,7 +37,6 @@ def train_svm():
     train_vectors = vectorizer.fit_transform(training_text)
     test_vectors = vectorizer.transform(test_text)
 
-    # Perform classification with SVM, kernel=linear
     classifier_linear = svm.SVC(kernel='linear')
     t0 = time.time()
     classifier_linear.fit(train_vectors, training_labels)
@@ -46,11 +45,11 @@ def train_svm():
     t2 = time.time()
     time_linear_train = t1 - t0
     time_linear_predict = t2 - t1
-    # results
+
     print("Training time: %fs; Prediction time: %fs" % (time_linear_train, time_linear_predict))
     report = classification_report(test_labels, prediction_linear, output_dict=True)
-    print('positive: ', report['pos'])
-    print('negative: ', report['neg'])
+    print('positive: ', report['positive'])
+    print('negative: ', report['negative'])
 
     utils.save_model('trained_models/svm/vectorizer', vectorizer)
     utils.save_model('trained_models/svm/classifier', classifier_linear)

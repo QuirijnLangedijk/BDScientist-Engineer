@@ -1,12 +1,12 @@
-from src.models.naive_bayes import get_punkt, format_sentence, train_nltk_nb
+from src.models.naive_bayes import get_punkt, format_sentence, train_nb
 from src.models.svm import train_svm
 from src.models.logistic_regression import train_lr
 import src.utils.utils as utils
 
 
 def classify_sentences_svm(sentences):
-    vectorizer = utils.load_model('../models/trained_models/svm/vectorizer')
-    classifier = utils.load_model('../models/trained_models/svm/classifier')
+    vectorizer = utils.load_model('../models/trained_models/svm/vectorizer300k')
+    classifier = utils.load_model('../models/trained_models/svm/classifier300k')
 
     print('SVM: ')
     for sentence in sentences:
@@ -16,7 +16,7 @@ def classify_sentences_svm(sentences):
 
 def classify_nb(sentences):
     get_punkt()
-    classifier = utils.load_model('../models/trained_models/naive_bayes/NaiveBayes')
+    classifier = utils.load_model('../models/trained_models/naive_bayes/NaiveBayes300k')
 
     print('\nNaive Bayes: ')
     for sentence in sentences:
@@ -24,8 +24,8 @@ def classify_nb(sentences):
 
 
 def classify_lg(sentences):
-    vectorizer = utils.load_model('../models/trained_models/logistic_regression/vectorizer')
-    classifier = utils.load_model('../models/trained_models/logistic_regression/classifier')
+    vectorizer = utils.load_model('../models/trained_models/logistic_regression/vectorizer300k')
+    classifier = utils.load_model('../models/trained_models/logistic_regression/classifier300k')
 
     print('\nLogistic Regression: ')
 
@@ -46,7 +46,7 @@ def classify_all():
 
 
 def train_all():
-    train_nltk_nb()
+    train_nb()
     train_svm()
     train_lr()
 

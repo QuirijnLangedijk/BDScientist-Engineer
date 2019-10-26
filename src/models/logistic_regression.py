@@ -11,7 +11,7 @@ from src.data.process_df import process_df
 
 
 def train_lr():
-    df = gd.get_local_dataset()
+    df = gd.get_all_data()
     df = process_df(df)
 
     text_pos = []
@@ -19,22 +19,27 @@ def train_lr():
     text_neg = []
     labels_neg = []
 
-    for i in range(100000):
+    #for i in range(df.shape[0]-5):
+    for i in range(200000):
+        if i % 10000 == 0:
+            print(i)
         text_pos.append(df.at[i, 'Positive_Review'])
         labels_pos.append('pos')
         text_neg.append(df.at[i, 'Negative_Review'])
         labels_neg.append('neg')
 
-    training_text = text_pos[:int((.8)*len(text_pos))] + text_neg[:int((.8)*len(text_neg))]
-    training_labels = labels_pos[:int((.8)*len(labels_pos))] + labels_neg[:int((.8)*len(labels_neg))]
+    training_text = text_pos[:int(.8*len(text_pos))] + text_neg[:int(.8*len(text_neg))]
+    training_labels = labels_pos[:int(.8*len(labels_pos))] + labels_neg[:int(.8*len(labels_neg))]
 
-    test_text = text_pos[int((.8)*len(text_pos)):] + text_neg[int((.8)*len(text_neg)):]
-    test_labels = labels_pos[int((.8)*len(labels_pos)):] + labels_neg[int((.8)*len(labels_neg)):]
+    test_text = text_pos[int(.8*len(text_pos)):] + text_neg[int(.8*len(text_neg)):]
+    test_labels = labels_pos[int(.8*len(labels_pos)):] + labels_neg[int(.8*len(labels_neg)):]
+
 
     vectorizer = CountVectorizer(
         analyzer='word',
         lowercase=False,
-        max_features=100
+        max_features=100,
+        stop_words='english'
     )
 
     features = vectorizer.fit_transform(
@@ -50,10 +55,14 @@ def train_lr():
 
     logmodel = LogisticRegression()
     logmodel.fit(x_train, y_train)
+
     predictions = logmodel.predict(x_test)
+
     print(classification_report(y_test, predictions))
     print(ConfusionMatrix(list(y_test), list(predictions)))
     print(accuracy_score(y_test, predictions))
 
-    utils.save_model('trained_models/logistic_regression/vectorizer', vectorizer)
-    utils.save_model('trained_models/logistic_regression/classifier', logmodel)
+    utils.save_model('trained_models/logistic_regression/vectorizer200k', vectorizer)
+    utils.save_model('trained_models/logistic_regression/classifier200k', logmodel)
+
+train_lr()
