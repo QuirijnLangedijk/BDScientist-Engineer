@@ -1,68 +1,44 @@
 from nltk import ConfusionMatrix
 from sklearn.metrics import accuracy_score
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report
+from sklearn.feature_extraction.text import TfidfVectorizer
+import time
 
 import src.data.get_data as gd
 import src.utils.utils as utils
 from src.data.process_df import process_df
+
+TRAIN_SIZE = .8
 
 
 def train_lr():
     df = gd.get_all_data()
     df = process_df(df)
 
-    text_pos = []
-    labels_pos = []
-    text_neg = []
-    labels_neg = []
+    training_text, training_labels, test_text, test_labels = utils.divide_train_test(df, TRAIN_SIZE)
 
-    #for i in range(df.shape[0]-5):
-    for i in range(200000):
-        if i % 10000 == 0:
-            print(i)
-        text_pos.append(df.at[i, 'Positive_Review'])
-        labels_pos.append('pos')
-        text_neg.append(df.at[i, 'Negative_Review'])
-        labels_neg.append('neg')
+    vectorizer = TfidfVectorizer(min_df=25,
+                                 max_df=0.8,
+                                 sublinear_tf=True,
+                                 use_idf=True)
 
-    training_text = text_pos[:int(.8*len(text_pos))] + text_neg[:int(.8*len(text_neg))]
-    training_labels = labels_pos[:int(.8*len(labels_pos))] + labels_neg[:int(.8*len(labels_neg))]
+    train_vectors = vectorizer.fit_transform(training_text)
+    test_vectors = vectorizer.transform(test_text)
 
-    test_text = text_pos[int(.8*len(text_pos)):] + text_neg[int(.8*len(text_neg)):]
-    test_labels = labels_pos[int(.8*len(labels_pos)):] + labels_neg[int(.8*len(labels_neg)):]
+    classifier = LogisticRegression()
+    t0 = time.time()
+    classifier.fit(train_vectors, training_labels)
+    t1 = time.time()
+    predictions = classifier.predict(test_vectors)
+    t2 = time.time()
 
+    print("Training time: %fs; Prediction time: %fs" % (t1 - t0, t2 - t1))
+    print(classification_report(test_labels, predictions))
+    print(ConfusionMatrix(list(test_labels), list(predictions)))
+    print(accuracy_score(test_labels, predictions))
 
-    vectorizer = CountVectorizer(
-        analyzer='word',
-        lowercase=False,
-        max_features=100,
-        stop_words='english'
-    )
-
-    features = vectorizer.fit_transform(
-        training_text + test_text)
-
-    features_nd = features.toarray()
-
-    x_train, x_test, y_train, y_test = train_test_split(
-        features_nd[0:len(training_text)],
-        training_labels,
-        train_size=0.80,
-        random_state=1234)
-
-    logmodel = LogisticRegression()
-    logmodel.fit(x_train, y_train)
-
-    predictions = logmodel.predict(x_test)
-
-    print(classification_report(y_test, predictions))
-    print(ConfusionMatrix(list(y_test), list(predictions)))
-    print(accuracy_score(y_test, predictions))
-
-    utils.save_model('trained_models/logistic_regression/vectorizer200k', vectorizer)
-    utils.save_model('trained_models/logistic_regression/classifier200k', logmodel)
+    utils.save_model('trained_models/logistic_regression/vectorizer300k', vectorizer)
+    utils.save_model('trained_models/logistic_regression/classifier300k', classifier)
 
 train_lr()

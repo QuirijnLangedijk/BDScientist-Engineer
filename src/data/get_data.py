@@ -18,14 +18,13 @@ def get_local_dataset():
 def get_webscraped_data():
     positive_list, negative_list = [], []
 
-    for i in range(208):
+    for i in range(2):
         if i % 10 == 0:
             print(i)
         page = requests.get('https://www.tripadvisor.com/Hotel_Review-g188590-d249326-Reviews-or' + str(i * 5)
                             + '-Hotel_Arena-Amsterdam_North_Holland_Province.html#REVIEWS')
         if page.status_code == 200:
             soup = BeautifulSoup(page.content, 'html.parser')
-            titles = soup.find_all('div', {'class': re.compile('hotels-review-list-parts-ReviewTitle__reviewTitle.+')})
             rating = soup.find_all('div', {'class': re.compile('hotels-review-list-parts-RatingLine__bubbles.+')})
             review = soup.find_all('q',
                                    {'class': re.compile('hotels-review-list-parts-ExpandableReview__reviewText.+')})
@@ -36,9 +35,10 @@ def get_webscraped_data():
                     negative_list.append(str(review[j].span)[6:-7])
 
     with closing(
-            Chrome(executable_path='C:/Users/quiri/Desktop/BDScientist-Engineer/Downloads/chromedriver.exe')) as driver:
+            Chrome(executable_path='../../Downloads/chromedriver.exe')) as driver:
         driver.get("https://www.trivago.co.uk/?cpt2=47362%2F100&sharedcid=47362&tab=rating")
 
+        # Sleep to load pages.
         time.sleep(3)
         button = driver.find_elements_by_class_name("tabs__label")
         time.sleep(1)
@@ -46,15 +46,15 @@ def get_webscraped_data():
         time.sleep(1)
         see_more = driver.find_elements_by_class_name("td-underline--hover")[1].click()
         time.sleep(2)
-        # store it to string variable
         page_source = driver.page_source
 
         soup = BeautifulSoup(page_source, 'html.parser')
+        # Find all scores and reviews.
         reviews = soup.find_all('p', {'class': 'sl-review__summary'})
         scores = soup.find_all('span', {'class': 'item-components__pillValue--4748f item-components__value-med--a26b7 item-components__pillValue--4748f'})
-        shortened = "..."
-        clean_reviews = [x for x in reviews if x.text[len(x.text)-4:len(x.text)] == "...." or not x.text[len(x.text)-3:len(x.text)] == shortened]
+        clean_reviews = [x for x in reviews if x.text[len(x.text)-4:len(x.text)] == "...." or not x.text[len(x.text)-3:len(x.text)] == '...']
 
+        # Loop over reviews, discard reviews with no score (/).
         for k in range(len(clean_reviews)):
             if scores[k].text != "/":
                 if float(scores[k].text) > 5.5:

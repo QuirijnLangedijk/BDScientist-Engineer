@@ -8,7 +8,7 @@ def classify_sentences_svm(sentences):
     vectorizer = utils.load_model('../models/trained_models/svm/vectorizer300k')
     classifier = utils.load_model('../models/trained_models/svm/classifier300k')
 
-    print('SVM: ')
+    print('Support Vector Machine: ')
     for sentence in sentences:
         review_vector = vectorizer.transform([sentence])
         print(classifier.predict(review_vector)[0] + ': ' + sentence)
@@ -28,7 +28,6 @@ def classify_lg(sentences):
     classifier = utils.load_model('../models/trained_models/logistic_regression/classifier300k')
 
     print('\nLogistic Regression: ')
-
     for sentence in sentences:
         review_vector = vectorizer.transform([sentence])
         print(classifier.predict(review_vector)[0] + ': ' + sentence)
