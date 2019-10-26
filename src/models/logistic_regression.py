@@ -38,7 +38,7 @@ def train_lr():
     print(ConfusionMatrix(list(test_labels), list(predictions)))
     print(accuracy_score(test_labels, predictions))
 
-    utils.save_model('trained_models/logistic_regression/vectorizer300k', vectorizer)
-    utils.save_model('trained_models/logistic_regression/classifier300k', classifier)
+    #utils.save_model('trained_models/logistic_regression/vectorizer300k', vectorizer)
+    #utils.save_model('trained_models/logistic_regression/classifier300k', classifier)
 
 train_lr()
