@@ -21,9 +21,8 @@ def train_nb():
     neg = []
 
     # -5 for out of range bugfix
-    for i in range(df.shape[0]-5):
-        if i % 1000 == 0:
-            print(i)
+    # for i in range(df.shape[0]-5):
+    for i in range(100000):
         # To lowercase and remove punctuation in order to improve accuracy
         neg.append([format_sentence(df.at[i, 'Negative_Review']), 'negative'])
         pos.append([format_sentence(df.at[i, 'Positive_Review']), 'positive'])

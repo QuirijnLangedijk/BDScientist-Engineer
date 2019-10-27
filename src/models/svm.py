@@ -2,6 +2,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import time
 from sklearn import svm
 from sklearn.metrics import classification_report, confusion_matrix
+from nltk import ConfusionMatrix
+from sklearn.metrics import accuracy_score
 
 import src.data.get_data as gd
 import src.utils.utils as utils
@@ -28,17 +30,18 @@ def train_svm():
     t0 = time.time()
     classifier.fit(train_vectors, training_labels)
     t1 = time.time()
-    prediction_linear = classifier.predict(test_vectors)
+    predictions = classifier.predict(test_vectors)
     t2 = time.time()
 
     print("Training time: %fs; Prediction time: %fs" % (t1 - t0, t2 - t1))
-    report = classification_report(test_labels, prediction_linear, output_dict=True)
+    report = classification_report(test_labels, predictions, output_dict=True)
     print('positive: ', report['positive'])
     print('negative: ', report['negative'])
 
-    print('Confusion Matrix:\n', confusion_matrix(test_labels, prediction_linear))
+    print('Confusion Matrix:\n', confusion_matrix(test_labels, predictions))
+    print(classification_report(test_labels, predictions))
+    print(ConfusionMatrix(list(test_labels), list(predictions)))
+    print(accuracy_score(test_labels, predictions))
 
-    #utils.save_model('trained_models/svm/vectorizer', vectorizer)
-    #utils.save_model('trained_models/svm/classifier', classifier)
-
-train_svm()
+    #utils.save_model('trained_models/svm/vectorizer300k', vectorizer)
+    #utils.save_model('trained_models/svm/classifier300k', classifier)
