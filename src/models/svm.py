@@ -1,9 +1,9 @@
-from sklearn.feature_extraction.text import TfidfVectorizer
-import time
 from sklearn import svm
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+from sklearn.feature_extraction.text import TfidfVectorizer
 from nltk import ConfusionMatrix
-from sklearn.metrics import accuracy_score
+import time
+
 
 import src.data.get_data as gd
 import src.utils.utils as utils
@@ -43,5 +43,5 @@ def train_svm():
     print(ConfusionMatrix(list(test_labels), list(predictions)))
     print(accuracy_score(test_labels, predictions))
 
-    #utils.save_model('trained_models/svm/vectorizer300k', vectorizer)
-    #utils.save_model('trained_models/svm/classifier300k', classifier)
+    # utils.save_model('trained_models/svm/vectorizer300k', vectorizer)
+    # utils.save_model('trained_models/svm/classifier300k', classifier)

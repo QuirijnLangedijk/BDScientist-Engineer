@@ -9,3 +9,5 @@ numpy
 selenium
 contractions>0.0.18
 textsearch
+prettytable
+emoji

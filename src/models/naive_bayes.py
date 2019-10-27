@@ -1,8 +1,5 @@
-# pylint: disable=C0103
-
 import src.data.get_data as gd
 from src.data.process_df import process_df
-import src.utils.utils as utils
 
 import nltk
 from nltk.classify import NaiveBayesClassifier
@@ -21,8 +18,8 @@ def train_nb():
     neg = []
 
     # -5 for out of range bugfix
-    # for i in range(df.shape[0]-5):
-    for i in range(100000):
+    for i in range(df.shape[0]-5):
+    # for i in range(100000):
         # To lowercase and remove punctuation in order to improve accuracy
         neg.append([format_sentence(df.at[i, 'Negative_Review']), 'negative'])
         pos.append([format_sentence(df.at[i, 'Positive_Review']), 'positive'])

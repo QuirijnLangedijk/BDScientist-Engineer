@@ -34,6 +34,10 @@ def train_lr():
     t2 = time.time()
 
     print("Training time: %fs; Prediction time: %fs" % (t1 - t0, t2 - t1))
+    report = classification_report(test_labels, predictions, output_dict=True)
+    print('positive: ', report['positive'])
+    print('negative: ', report['negative'])
+
     print(classification_report(test_labels, predictions))
     print(ConfusionMatrix(list(test_labels), list(predictions)))
     print(accuracy_score(test_labels, predictions))
