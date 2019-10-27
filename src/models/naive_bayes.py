@@ -57,6 +57,3 @@ def get_punkt():
         nltk.data.find('tokenizers/punkt')
     except LookupError:
         nltk.download('punkt')
-
-
-train_nb()

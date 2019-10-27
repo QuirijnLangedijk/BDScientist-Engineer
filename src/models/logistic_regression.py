@@ -40,5 +40,3 @@ def train_lr():
 
     #utils.save_model('trained_models/logistic_regression/vectorizer300k', vectorizer)
     #utils.save_model('trained_models/logistic_regression/classifier300k', classifier)
-
-train_lr()
