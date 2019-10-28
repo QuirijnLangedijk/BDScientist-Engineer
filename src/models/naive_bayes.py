@@ -5,6 +5,8 @@ import nltk
 from nltk.classify import NaiveBayesClassifier
 from nltk.classify.util import accuracy
 from sklearn.metrics import confusion_matrix
+import contractions
+import string
 
 
 TR_TE_SPLIT = .8
@@ -19,10 +21,9 @@ def train_nb():
 
     # -5 for out of range bugfix
     for i in range(df.shape[0]-5):
-    # for i in range(100000):
         # To lowercase and remove punctuation in order to improve accuracy
-        neg.append([format_sentence(df.at[i, 'Negative_Review']), 'negative'])
-        pos.append([format_sentence(df.at[i, 'Positive_Review']), 'positive'])
+        neg.append([format_sentence(df.at[i, 'Negative_Review'].lower().translate(None, string.punctuation)), 'negative'])
+        pos.append([format_sentence(df.at[i, 'Positive_Review'].lower().translate(None, string.punctuation)), 'positive'])
 
     X = pos[:int(TR_TE_SPLIT * len(pos))] + neg[:int(TR_TE_SPLIT * len(neg))]
     y = pos[int(TR_TE_SPLIT * len(pos)):] + neg[int(TR_TE_SPLIT * len(neg)):]
@@ -45,7 +46,7 @@ def train_nb():
 
 def format_sentence(sentence):
     # Changes words like can't to can not and ya'll to you all
-    # sentence = contractions.fix(sentence, slang=True)
+    sentence = contractions.fix(sentence, slang=True)
     return {word: True for word in nltk.word_tokenize(sentence)}
 
 

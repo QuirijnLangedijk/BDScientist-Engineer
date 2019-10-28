@@ -81,7 +81,8 @@ def get_own_reviews():
 
 
 def upload_local():
-    db.upload_to_db(pdf.process_df(get_local_dataset()), 'Kaggle')
+    print(pdf.process_df(get_local_dataset()), 'Kaggle')
+    #db.upload_to_db(pdf.process_df(get_local_dataset()), 'Kaggle')
 
 
 def upload_web_scraped():
@@ -127,3 +128,5 @@ def get_all_data():
     dataset = dataset.append(written)
     dataset.reset_index(drop=True, inplace=True)
     return dataset
+
+upload_local()
