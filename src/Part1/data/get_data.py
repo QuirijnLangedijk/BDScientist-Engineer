@@ -12,7 +12,7 @@ from selenium.webdriver import Chrome
 
 
 def get_local_dataset():
-    return pd.read_csv('../../DataSet/Hotel_Reviews.csv')
+    return pd.read_csv('../../../DataSet/Hotel_Reviews.csv')
 
 
 def get_webscraped_data():
@@ -35,7 +35,7 @@ def get_webscraped_data():
                     negative_list.append(str(review[j].span)[6:-7])
 
     with closing(
-            Chrome(executable_path='../../Downloads/chromedriver.exe')) as driver:
+            Chrome(executable_path='../../../Downloads/chromedriver.exe')) as driver:
         driver.get("https://www.trivago.co.uk/?cpt2=47362%2F100&sharedcid=47362&tab=rating")
 
         # Sleep to load pages.
