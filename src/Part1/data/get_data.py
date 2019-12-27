@@ -1,5 +1,5 @@
-import src.db.db_utils as db
-from src.data import process_df as pdf
+import src.Part1.db.db_utils as db
+from src.Part1.data import process_df as pdf
 
 import pandas as pd
 import numpy as np

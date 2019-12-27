@@ -1,11 +1,11 @@
-from src.models.naive_bayes import get_punkt, format_sentence, train_nb
-from src.models.svm import train_svm
-from src.models.logistic_regression import train_lr
+from src.Part1.models.naive_bayes import get_punkt, format_sentence, train_nb
+from src.Part1.models.svm import train_svm
+from src.Part1.models.logistic_regression import train_lr
 from prettytable import PrettyTable
 import time
 import emoji
 
-import src.utils.utils as utils
+import src.Part1.utils.utils as utils
 
 
 def classify_sentences_svm():

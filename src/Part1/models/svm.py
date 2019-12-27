@@ -5,9 +5,9 @@ from nltk import ConfusionMatrix
 import time
 
 
-import src.data.get_data as gd
-import src.utils.utils as utils
-from src.data.process_df import process_df
+import src.Part1.data.get_data as gd
+import src.Part1.utils.utils as utils
+from src.Part1.data.process_df import process_df
 
 
 def train_svm():

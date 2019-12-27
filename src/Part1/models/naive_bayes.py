@@ -1,5 +1,5 @@
-import src.data.get_data as gd
-from src.data.process_df import process_df
+import src.Part1.data.get_data as gd
+from src.Part1.data.process_df import process_df
 
 import nltk
 from nltk.classify import NaiveBayesClassifier

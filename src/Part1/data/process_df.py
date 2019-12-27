@@ -1,5 +1,3 @@
-import pandas as pd
-
 REGEX = "^(((\d|\w)*?\s?nothing\s?(\d|\w)*\s?)|none|null|((\d|\w)+\s?(negative|positive)))$"
 
 
