@@ -11,3 +11,5 @@ contractions>0.0.18
 textsearch
 prettytable
 emoji
+dnspython
+pymongo
