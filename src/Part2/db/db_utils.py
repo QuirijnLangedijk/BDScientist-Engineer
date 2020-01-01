@@ -1,12 +1,24 @@
 import pymongo
 import pandas as pd
+import numpy as np
 
 CONNECTION_STRING = "mongodb+srv://admin:admin@cluster0-n8kmr.gcp.mongodb.net/test?retryWrites=true&w=majority"
 
+
 def clean(df):
-    df = df.drop(df[(df['Negative_Review'].str.contains("(?i)no negative|nothing|none")) |
-                    (df['Positive_Review'].str.contains("(?i)no positive|nothing|none"))
+    df = df.drop(df[(df['Negative_Review'].str.contains("(?i)no negative|nothing|none|n a|na|all positive|all good|everything")) |
+                    (df['Positive_Review'].str.contains("(?i)no positive|nothing|none|n a|na|all negative|everything"))
                     ].index)
+
+    df = df[df.Negative_Review.str.strip() != '']
+    df = df[df.Positive_Review.str.strip() != '']
+
+    '''
+    df['Negative_Review'].replace(' ', np.nan, inplace=True)
+    df['Positive_Review'].replace(' ', np.nan, inplace=True)
+    df.dropna(subset=['Negative_Review'], inplace=True)
+    df.dropna(subset=['Positive_Review'], inplace=True)
+    '''
     df.reset_index(drop=True, inplace=True)
     return df
 
@@ -41,10 +53,23 @@ def upload_balanced_data():
     df = pd.read_csv('../../../DataSet/Hotel_Reviews.csv')
     df = clean(df)
     client = pymongo.MongoClient('localhost', 27017)
-    db = client.PO2.balanced_data
+    db = client.PO2.balanced_data2
 
     for i in range(10000):
-        positive_data = [df.iloc[i].Positive_Review, 1]
-        negative_data = [df.iloc[i].Negative_Review, 0]
-        review = pd.DataFrame([positive_data, negative_data], columns=['Review', 'Sentiment'])
-        db.insert_many(review.to_dict(orient='records'))
+        if len(df.iloc[i].Positive_Review) > 0 and len(df.iloc[i].Negative_Review) > 0:
+            positive_data = [df.iloc[i].Positive_Review, 1]
+            negative_data = [df.iloc[i].Negative_Review, 0]
+            review = pd.DataFrame([positive_data, negative_data], columns=['Review', 'Sentiment'])
+            db.insert_many(review.to_dict(orient='records'))
+
+
+def get_balanced_data():
+    client = pymongo.MongoClient('localhost', 27017)
+    col = client.PO2.balanced_data
+    cursor = col.find()
+    df = pd.DataFrame(list(cursor))
+
+    del df['_id']
+    return df
+
+upload_balanced_data()

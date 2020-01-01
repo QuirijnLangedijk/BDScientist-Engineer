@@ -13,3 +13,5 @@ prettytable
 emoji
 dnspython
 pymongo
+pyspark
+findspark
