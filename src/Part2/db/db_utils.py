@@ -72,4 +72,12 @@ def get_balanced_data():
     del df['_id']
     return df
 
-upload_balanced_data()
+
+def get_all_data():
+    client = pymongo.MongoClient('localhost', 27017)
+    col = client.PO2.all_data
+    cursor = col.find()
+    df = pd.DataFrame(list(cursor))
+
+    del df['_id']
+    return df
