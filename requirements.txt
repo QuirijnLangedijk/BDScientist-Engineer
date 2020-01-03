@@ -16,3 +16,4 @@ pymongo
 pyspark
 findspark
 plotly
+simple_colors

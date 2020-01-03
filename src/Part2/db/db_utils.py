@@ -53,13 +53,13 @@ def upload_balanced_data():
     df = pd.read_csv('../../../DataSet/Hotel_Reviews.csv')
     df = clean(df)
     client = pymongo.MongoClient('localhost', 27017)
-    db = client.PO2.balanced_data2
+    db = client.PO2.balanced_data3
 
     for i in range(10000):
         if len(df.iloc[i].Positive_Review) > 0 and len(df.iloc[i].Negative_Review) > 0:
             positive_data = [df.iloc[i].Positive_Review, 1]
             negative_data = [df.iloc[i].Negative_Review, 0]
-            review = pd.DataFrame([positive_data, negative_data], columns=['Review', 'Sentiment'])
+            review = pd.DataFrame([positive_data, negative_data], columns=['text', 'label'])
             db.insert_many(review.to_dict(orient='records'))
 
 
