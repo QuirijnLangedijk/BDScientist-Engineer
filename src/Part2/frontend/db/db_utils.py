@@ -1,6 +1,5 @@
 import pymongo
 import pandas as pd
-import numpy as np
 
 CONNECTION_STRING = "mongodb+srv://admin:admin@cluster0-n8kmr.gcp.mongodb.net/test?retryWrites=true&w=majority"
 

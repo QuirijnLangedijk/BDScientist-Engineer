@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html>
+ <head>
+   {% load plotly_dash%}
+   {% load staticfiles%}
+   {% load bootstrap4%}
+   {% bootstrap_css%}
+   {% bootstrap_javascript jquery="full"%}
+   {% block extra_header%}{% endblock%}
+   {% block app_header_css%}
+   <link rel="stylesheet" type="text/css" href="{%static "frontend/home.css"%}"></link>
+   {% endblock%}
+   <title>BDSE 2</title>
+ </head>
+ <body>
+   <header>
+     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+       <div class="navbar-nav">
+         {% block demo_items %}
+         <a class="nav-item nav-link btn btn-lg text-white" href="{%url "home"%}">BDSE 2</a>
+         {% block demo_menu_items %}
+         <a class="nav-item nav-link btn btn-lg" href="{%url "map"%}">Map</a>
+         <a class="nav-item nav-link btn btn-lg" href="{%url "classify"%}">Classify</a>
+         {% endblock %}
+         {% endblock %}
+       </div>
+     </nav>
+   </header>
+   <main>
+     {% block main_top%}{% endblock%}
+     <div class="container">
+       {% block content%}{% endblock%}
+     </div>
+   </main>
+   {% block footer%}
+   {% endblock%}
+ </body>
+ {% block post_body%}{% endblock%}
+</html>
