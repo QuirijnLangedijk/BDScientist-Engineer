@@ -1,5 +1,6 @@
 import pymongo
 import pandas as pd
+import dask.dataframe as ddf
 
 CONNECTION_STRING = "mongodb+srv://admin:admin@cluster0-n8kmr.gcp.mongodb.net/test?retryWrites=true&w=majority"
 
@@ -73,10 +74,16 @@ def get_balanced_data():
 
 
 def get_all_data():
+    return execute_query('all_data')
+
+
+def execute_query(collection, query=''):
     client = pymongo.MongoClient('localhost', 27017)
-    col = client.PO2.all_data
-    cursor = col.find()
+    col = client.PO2[collection]
+    print(col)
+    print(query)
+    cursor = col.aggregate(query, allowDiskUse=True)
+
     df = pd.DataFrame(list(cursor))
 
-    del df['_id']
     return df

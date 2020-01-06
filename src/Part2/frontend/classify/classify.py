@@ -16,9 +16,9 @@ def classify_lr(sentence):
         for row in selected.collect():
             rid, text, prob, _prediction = row
             if _prediction == 0.000000:
-                return "Review: %s is a: %s review. The model is %f%% sure." % (text, 'negative', prob[0]*100)
+                return "%s The model is %f%% sure." % ('negative', prob[0]*100)
             else:
-                return "Review: %s is a: %s review.  The model is %f%% sure." % (text, 'positive', prob[1]*100)
+                return "%s The model is %f%% sure." % ('positive', prob[1]*100)
 
     except ValueError:
         print('error')

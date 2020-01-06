@@ -1,5 +1,7 @@
 from pyspark.sql import SparkSession
 import pickle
+import contractions
+import nltk
 
 
 def create_spark():
@@ -21,3 +23,16 @@ def load_model(name):
     model = pickle.load(f)
     f.close()
     return model
+
+
+def format_sentence(sentence):
+    # Changes words like can't to can not and ya'll to you all
+    sentence = contractions.fix(sentence, slang=True)
+    return {word: True for word in nltk.word_tokenize(sentence)}
+
+
+def get_punkt():
+    try:
+        nltk.data.find('tokenizers/punkt')
+    except LookupError:
+        nltk.download('punkt')
