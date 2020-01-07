@@ -6,8 +6,8 @@ import nltk
 
 def create_spark():
     return SparkSession.builder.appName("myApp") \
-            .config("spark.mongodb.input.uri", "mongodb://127.0.0.1/PO2.balanced_data3") \
-            .config("spark.mongodb.output.uri", "mongodb://127.0.0.1/PO2.balanced_data3") \
+            .config("spark.mongodb.input.uri", "mongodb://127.0.0.1/PO2.balanced_data") \
+            .config("spark.mongodb.output.uri", "mongodb://127.0.0.1/PO2.balanced_data") \
             .config('spark.jars.packages', 'org.mongodb.spark:mongo-spark-connector_2.11:2.3.2') \
             .getOrCreate()
 

@@ -4,7 +4,7 @@ from pyspark.ml.feature import HashingTF, Tokenizer
 from pyspark.ml import Pipeline
 from pyspark.ml.classification import LogisticRegression
 from pyspark.ml.evaluation import BinaryClassificationEvaluator
-import src.Part2.utils.utils as utils
+import src.Part2.frontend.utils.utils as utils
 
 def train():
     try:
@@ -35,4 +35,6 @@ def train():
     print("Accuracy Score: {0:.4f}".format(accuracy))
     print("ROC-AUC: {0:.4f}".format(roc_auc))
 
-    model.save("./trained/lrm_model.model")
+    model.save("./trained/lrm_model.model2")
+
+train()

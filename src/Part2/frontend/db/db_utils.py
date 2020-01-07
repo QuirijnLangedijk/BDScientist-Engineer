@@ -1,6 +1,5 @@
 import pymongo
 import pandas as pd
-import dask.dataframe as ddf
 
 CONNECTION_STRING = "mongodb+srv://admin:admin@cluster0-n8kmr.gcp.mongodb.net/test?retryWrites=true&w=majority"
 
@@ -53,7 +52,7 @@ def upload_balanced_data():
     df = pd.read_csv('../../../DataSet/Hotel_Reviews.csv')
     df = clean(df)
     client = pymongo.MongoClient('localhost', 27017)
-    db = client.PO2.balanced_data3
+    db = client.PO2.balanced_data
 
     for i in range(10000):
         if len(df.iloc[i].Positive_Review) > 0 and len(df.iloc[i].Negative_Review) > 0:

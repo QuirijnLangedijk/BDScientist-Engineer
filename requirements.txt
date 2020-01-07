@@ -18,3 +18,4 @@ findspark
 plotly
 simple_colors
 dask
+Color-Console
