@@ -6,6 +6,7 @@ from pyspark.ml.classification import LogisticRegression
 from pyspark.ml.evaluation import BinaryClassificationEvaluator
 import src.Part2.utils.utils as utils
 
+
 def train():
     try:
         spark = utils.create_spark()

@@ -54,79 +54,6 @@ def display_click(n_clicks, value):
         return table
 
 
-
-'''
-app.layout = html.Div([
-
-    html.Label('Input sentence'),
-    dcc.Input(id='input-1'),
-
-    html.Button('Classify', id='button-2'),
-
-    html.Div(className='row', children=[
-        html.Div(id="output"),
-    ]),
-
-
-    html.Div(dcc.Input(id='input-box', type='text')),
-    html.Button('Submit', id='button'),
-    html.Div(id='output-container-button',
-             children='Enter a value and press submit'),
-    html.Div(id="click_table"),
-])
-
-
-@app.callback(
-    Output('output-container-button', 'children'),
-    [Input('button', 'n_clicks')],
-    [State('input-box', 'value')])
-def update_output(n_clicks, value):
-    return 'The input value was "{}" and the button has been clicked {} times'.format(
-        value,
-        n_clicks
-    )
-
-
-@app.callback(
-    Output(component_id='click_table', component_property='children'),
-    [Input(component_id='input-box', component_property='value')],
-    [State('input-box', 'value')])
-def classify_all(sentence, value):
-    data = [['Logistic Regression', classify_normal_lr(sentence)], ['Naive Bayes', classify_nb(sentence)], ['Support Vector Machine', classify_svm(sentence)]]
-    columns = ['Model', 'Resultaat']
-    df = pd.DataFrame(data=data, columns=columns)
-
-    print(df.head())
-
-    return dash_table.DataTable(
-        columns=columns,
-        data=df.to_dict('records'),
-        style_cell={'textAlign': 'left'},
-        style_as_list_view=True
-    )
-
-@app.callback(
-    Output('output', 'children'),
-    [Input('button-2', 'n_clicks')],
-    state=[State('input-1', 'value')])
-def compute(input1, sentence):
-    data = [['Logistic Regression', classify_normal_lr(sentence)], ['Naive Bayes', classify_nb(sentence)], ['Support Vector Machine', classify_svm(sentence)]]
-    columns = ['Model', 'Resultaat']
-    df = pd.DataFrame(data=data, columns=columns)
-
-    print(df.head())
-
-    table = dash_table.DataTable(
-        columns=columns,
-        data=df.to_dict('records'),
-        style_cell={'textAlign': 'left'},
-        style_as_list_view=True
-    )
-
-    print('Sentence: ', sentence, 'Logistic Regression: ', classify_normal_lr(sentence), ' Naive Bayes: ', classify_nb(sentence), ' Support Vector Machine: ', classify_svm(sentence))
-    return 'Sentence: ', sentence, 'Logistic Regression: ', classify_normal_lr(sentence), ' Naive Bayes: ', classify_nb(sentence), ' Support Vector Machine: ', classify_svm(sentence)
-'''
-
 def classify_spark_lr(sentence):
     return classify_lr(sentence)
 
@@ -152,8 +79,6 @@ def classify_svm(sentence):
 
     review_vector = vectorizer.transform([sentence])
     return classifier.predict(review_vector)[0]
-
-
 
 
 if __name__ == '__main__':

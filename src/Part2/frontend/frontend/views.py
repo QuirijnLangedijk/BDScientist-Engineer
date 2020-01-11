@@ -6,6 +6,7 @@ from django.shortcuts import render
 
 #pylint: disable=unused-argument
 
+
 def dash_example_1_view(request, template_name="demo_six.html", **kwargs):
     'Example view that inserts content into the dash context passed to the dash application'
 
@@ -17,6 +18,7 @@ def dash_example_1_view(request, template_name="demo_six.html", **kwargs):
     request.session['django_plotly_dash'] = dash_context
 
     return render(request, template_name=template_name, context=context)
+
 
 def session_state_view(request, template_name, **kwargs):
     'Example view that exhibits the use of sessions to store state'

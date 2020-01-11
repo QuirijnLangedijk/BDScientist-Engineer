@@ -1,6 +1,5 @@
 import pymongo
 import pandas as pd
-import dask.dataframe as ddf
 
 CONNECTION_STRING = "mongodb+srv://admin:admin@cluster0-n8kmr.gcp.mongodb.net/test?retryWrites=true&w=majority"
 
@@ -13,12 +12,6 @@ def clean(df):
     df = df[df.Negative_Review.str.strip() != '']
     df = df[df.Positive_Review.str.strip() != '']
 
-    '''
-    df['Negative_Review'].replace(' ', np.nan, inplace=True)
-    df['Positive_Review'].replace(' ', np.nan, inplace=True)
-    df.dropna(subset=['Negative_Review'], inplace=True)
-    df.dropna(subset=['Positive_Review'], inplace=True)
-    '''
     df.reset_index(drop=True, inplace=True)
     return df
 

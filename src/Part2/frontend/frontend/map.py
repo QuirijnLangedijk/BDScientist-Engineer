@@ -20,40 +20,40 @@ def make_map(min_score=8, max_score=10):
     df = None
     df = db.execute_query('all_data',     [
         {
-            "$match" : {
-                "$and" : [
+            "$match": {
+                "$and": [
                     {
-                        "Average_Score" : {
-                            "$gte" : min_score
+                        "Average_Score": {
+                            "$gte": min_score
                         }
                     },
                     {
-                        "Average_Score" : {
-                            "$lte" : max_score
+                        "Average_Score": {
+                            "$lte": max_score
                         }
                     }
                 ]
             }
         },
         {
-            "$group" : {
-                "_id" : {
-                    "Lng" : "$Lng",
-                    "Total_Number_of_Reviews" : "$Total_Number_of_Reviews",
-                    "Lat" : "$Lat",
-                    "Average_Score" : "$Average_Score",
-                    "Hotel_Name" : "$Hotel_Name"
+            "$group": {
+                "_id": {
+                    "Lng": "$Lng",
+                    "Total_Number_of_Reviews": "$Total_Number_of_Reviews",
+                    "Lat": "$Lat",
+                    "Average_Score": "$Average_Score",
+                    "Hotel_Name": "$Hotel_Name"
                 }
             }
         },
         {
-            "$project" : {
-                "Hotel_Name" : "$_id.Hotel_Name",
-                "Lat" : "$_id.Lat",
-                "Lng" : "$_id.Lng",
-                "Total_Number_of_Reviews" : "$_id.Total_Number_of_Reviews",
-                "Average_Score" : "$_id.Average_Score",
-                "_id" : 0
+            "$project": {
+                "Hotel_Name": "$_id.Hotel_Name",
+                "Lat": "$_id.Lat",
+                "Lng": "$_id.Lng",
+                "Total_Number_of_Reviews": "$_id.Total_Number_of_Reviews",
+                "Average_Score": "$_id.Average_Score",
+                "_id": 0
             }
         }
     ]
@@ -138,42 +138,6 @@ app.layout = html.Div(
     ], className='ten columns offset-by-one'))
 
 
-
-'''
-app.layout = html.Div([
-    html.Div(className='row', children=[
-        dcc.RangeSlider(
-            min=0,
-            max=10,
-            step=0.1,
-            marks={
-                0: '0',
-                1: '1',
-                2: '2',
-                3: '3',
-                4: '4',
-                5: '5',
-                6: '6',
-                7: '7',
-                8: '8',
-                9: '9',
-                10: '10'
-            },
-            value=6
-        )
-    ]),
-
-    dcc.Graph(
-        id='basic-interactions',
-        figure=fig
-    ),
-
-    html.Div(className='row', children=[
-        html.Div(id="click_table"),
-    ])
-])
-'''
-
 @app.callback(
     Output('map', 'figure'),
     [Input('rating_range', 'value')])
@@ -186,10 +150,10 @@ def update_map(value):
 @app.callback(
     Output('click_table', 'children'),
     [Input('map', 'clickData')])
-def display_click(clickData):
-    ctext(clickData, "blue")
-    if clickData:
-        hdf = db.execute_query('all_data', [{"$match": {'Hotel_Name': clickData['points'][0]['hovertext']}}])
+def display_click(data):
+    ctext(data, "blue")
+    if data:
+        hdf = db.execute_query('all_data', [{"$match": {'Hotel_Name': data['points'][0]['hovertext']}}])
         hdf = hdf.rename(columns={'Review': 'Review_long'})
         hdf['Review'] = hdf['Review_long'].astype(str).str[0:50]
         hdf = hdf.drop(columns=['Hotel_Address', 'Hotel_Name', 'Lat', 'Lng', 'Average_Score', 'Total_Number_of_Reviews', 'Additional_Number_of_Scoring', 'Review_long'])

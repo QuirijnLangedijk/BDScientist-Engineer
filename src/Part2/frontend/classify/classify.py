@@ -8,7 +8,7 @@ def classify_lr(sentence):
         model = PipelineModel.load("models/trained/lrm_model.model")
 
         test = spark.createDataFrame([
-            (4, sentence)
+            (1, sentence)
         ], ["id", "text"])
 
         prediction = model.transform(test)
@@ -16,9 +16,9 @@ def classify_lr(sentence):
         for row in selected.collect():
             rid, text, prob, _prediction = row
             if _prediction == 0.000000:
-                return "%s The model is %f%% sure." % ('negative', prob[0]*100)
+                return "%s The model is %f%% sure." % ('neg.', prob[0]*100)
             else:
-                return "%s The model is %f%% sure." % ('positive', prob[1]*100)
+                return "%s The model is %f%% sure." % ('pos.', prob[1]*100)
 
     except ValueError:
         print('error')
