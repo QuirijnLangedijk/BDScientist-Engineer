@@ -158,7 +158,7 @@ def display_click(data):
         hdf['Review'] = hdf['Review_long'].astype(str).str[0:50]
         hdf = hdf.drop(columns=['Hotel_Address', 'Hotel_Name', 'Lat', 'Lng', 'Average_Score', 'Total_Number_of_Reviews', 'Additional_Number_of_Scoring', 'Review_long'])
         ctext(hdf, "red")
-        #reorder
+        # reorder
         hdf = hdf[['Review', 'Sentiment', 'Reviewer_Score', 'Review_Date', 'Review_Word_Counts', 'Reviewer_Nationality', 'Total_Number_of_Reviews_Reviewer_Has_Given', 'Tags']]
 
         ctext(hdf.head(), "red")

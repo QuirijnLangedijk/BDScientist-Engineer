@@ -4,10 +4,17 @@ from pyspark.ml.feature import HashingTF, Tokenizer
 from pyspark.ml import Pipeline
 from pyspark.ml.classification import LogisticRegression
 from pyspark.ml.evaluation import BinaryClassificationEvaluator
-import src.Part2.utils.utils as utils
+from pyspark.ml.tuning import CrossValidator, ParamGridBuilder
+import time
+import src.Part2.frontend.utils.utils as utils
+
+
+def elapsed_since(start):
+    return time.strftime("%H:%M:%S", time.gmtime(time.time() - start))
 
 
 def train():
+    spark = None
     try:
         spark = utils.create_spark()
 
@@ -15,25 +22,39 @@ def train():
     except ValueError:
         warnings.warn("SparkContext already exists in this scope")
 
-    df = spark.read.format("com.mongodb.spark.sql.DefaultSource").load()
-    df = df.drop('_id')
-    df.printSchema()
-    (train_set, val_set, test_set) = df.randomSplit([0.80, 0.01, 0.19], seed=1234)
+    if spark:
+        start_time = time.time()
+        df = spark.read.format("com.mongodb.spark.sql.DefaultSource").load()
+        df = df.drop('_id')
+        df.printSchema()
+        (train_set, test_set) = df.randomSplit([0.85, 0.15], seed=1234)
 
-    # Configure an ML pipeline, which consists of three stages: tokenizer, hashingTF, and lr.
-    tokenizer = Tokenizer(inputCol="text", outputCol="words")
-    hashingTF = HashingTF(inputCol=tokenizer.getOutputCol(), outputCol="features")
-    lr = LogisticRegression(maxIter=10, regParam=0.001)
-    pipeline = Pipeline(stages=[tokenizer, hashingTF, lr])
+        tokenizer = Tokenizer(inputCol="text", outputCol="words")
+        hashing_tf = HashingTF(inputCol=tokenizer.getOutputCol(), outputCol="features")
+        lr = LogisticRegression(maxIter=10, regParam=0.1)
+        pipeline = Pipeline(stages=[tokenizer, hashing_tf, lr])
 
-    model = pipeline.fit(train_set)
-    evaluator = BinaryClassificationEvaluator(rawPredictionCol="rawPrediction")
+        param_grid = ParamGridBuilder() \
+            .addGrid(hashing_tf .numFeatures, [10, 100, 1000, 10000]) \
+            .addGrid(lr.regParam, [1, 0.1, 0.01, 0.001]) \
+            .build()
 
-    predictions = model.transform(val_set)
-    accuracy = predictions.filter(predictions.label == predictions.prediction).count() / float(val_set.count())
-    roc_auc = evaluator.evaluate(predictions)
+        cross_validation = CrossValidator(estimator=pipeline,
+                                          estimatorParamMaps=param_grid,
+                                          evaluator=BinaryClassificationEvaluator(),
+                                          numFolds=3)
 
-    print("Accuracy Score: {0:.4f}".format(accuracy))
-    print("ROC-AUC: {0:.4f}".format(roc_auc))
+        model_cv = cross_validation.fit(train_set)
+        evaluator = BinaryClassificationEvaluator(rawPredictionCol="rawPrediction")
 
-    model.save("./trained/lrm_model.model")
+        predictions = model_cv.transform(test_set)
+        accuracy = predictions.filter(predictions.label == predictions.prediction).count() / float(test_set.count())
+        roc_auc = evaluator.evaluate(predictions)
+
+        print("Accuracy Score: {0:.4f}".format(accuracy))
+        print("ROC-AUC: {0:.4f}".format(roc_auc))
+        print("Train time:", elapsed_since(start_time))
+
+        model_cv.save("./trained/lr50k.model")
+
+train()

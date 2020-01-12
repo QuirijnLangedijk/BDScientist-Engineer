@@ -17,7 +17,7 @@ def clean(df):
 
 
 def upload_all_data():
-    df = pd.read_csv('../../../DataSet/Hotel_Reviews.csv')
+    df = pd.read_csv('../../../../DataSet/Hotel_Reviews.csv')
     column_names = ['Hotel_Address', 'Hotel_Name', 'Lat', 'Lng', 'Average_Score', 'Total_Number_of_Reviews',
                     'Additional_Number_of_Scoring', 'Reviewer_Nationality', 'Review_Date', 'Review', 'Review_Word_Counts',
                     'Total_Number_of_Reviews_Reviewer_Has_Given', 'Reviewer_Score', 'Tags', 'Sentiment']
@@ -43,12 +43,12 @@ def upload_all_data():
 
 
 def upload_balanced_data():
-    df = pd.read_csv('../../../DataSet/Hotel_Reviews.csv')
+    df = pd.read_csv('../../../../DataSet/Hotel_Reviews.csv')
     df = clean(df)
     client = pymongo.MongoClient('localhost', 27017)
-    db = client.PO2.balanced_data3
+    db = client.PO2.balanced_data
 
-    for i in range(10000):
+    for i in range(200000):
         if len(df.iloc[i].Positive_Review) > 0 and len(df.iloc[i].Negative_Review) > 0:
             positive_data = [df.iloc[i].Positive_Review, 1]
             negative_data = [df.iloc[i].Negative_Review, 0]

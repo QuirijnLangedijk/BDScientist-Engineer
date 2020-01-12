@@ -36,8 +36,8 @@ def test_pandas_load():
 def test_dask_load():
     memory_before = get_process_memory()
     start_time = time.time()
-    ddf1 = pd.read_csv('../../../DataSet/Hotel_Reviews.csv')
-    ddf_list = [ddf1, ddf1, ddf1, ddf1, ddf1]  # Concat 5 ddfs
+    ddf1 = dd.read_csv('../../../DataSet/Hotel_Reviews.csv')
+    ddf_list = [ddf1, ddf1, ddf1, ddf1, ddf1, ddf1, ddf1, ddf1, ddf1, ddf1, ddf1, ddf1, ddf1, ddf1]  # Concat 10 ddfs
     ddf = dd.concat(ddf_list, axis=0, interleave_partitions=True)
     show_results(start_time, memory_before, 'Dask Load')
 
@@ -84,6 +84,8 @@ def drop_duplicates(df, ddf):
     ddf_dropped = ddf.drop_duplicates(subset='Hotel_Name')
     show_results(start_time, memory_after_pandas, 'Dask Drop Duplicates')
 
+    del df_dropped
+    del ddf_dropped
     # return [df_dropped, ddf_dropped]
 
 
@@ -107,6 +109,5 @@ def save_csv():
     show_results(start_time, memory_before, 'Dask Read, Drop and save to CSV')
 
 
-
-# test_performance()
+test_performance()
 save_csv()

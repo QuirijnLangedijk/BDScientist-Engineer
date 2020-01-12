@@ -49,8 +49,6 @@ def display_click(n_clicks, value):
             style_as_list_view=True
         )
 
-        print(table)
-
         return table
 
 
