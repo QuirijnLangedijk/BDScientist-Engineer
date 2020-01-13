@@ -2,7 +2,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
 from django_plotly_dash import DjangoDash
-from classify.classify import classify_lr
+from classify.classify import classify_lr, classify_svm
 import utils.utils as utils
 import pandas as pd
 import dash_table
@@ -34,8 +34,8 @@ app.layout = html.Div([
     [State('input', 'value')])
 def display_click(n_clicks, value):
     if value:
-        data = [['Logistic Regression Spark', classify_spark_lr(value)], ['Logistic Regression', classify_normal_lr(value)], ['Naive Bayes', classify_nb(value)],
-                ['Support Vector Machine', classify_svm(value)]]
+        data = [['Logistic Regression Spark', classify_spark_lr(value)], ['SVM Spark', classify_spark_svm(value)], ['Logistic Regression', classify_normal_lr(value)], ['Naive Bayes', classify_nb(value)],
+                ['Support Vector Machine', classify_normal_svm(value)]]
         columns = ['Model', 'Resultaat']
         df = pd.DataFrame(data=data, columns=columns)
         columns = [{"name": i, "id": i} for i in df.columns]
@@ -56,6 +56,10 @@ def classify_spark_lr(sentence):
     return classify_lr(sentence)
 
 
+def classify_spark_svm(sentence):
+    return classify_svm(sentence)
+
+
 def classify_normal_lr(sentence):
     vectorizer = utils.load_model('../../Part1/models/trained_models/logistic_regression/vectorizer100k')
     classifier = utils.load_model('../../Part1/models/trained_models/logistic_regression/classifier100k')
@@ -71,7 +75,7 @@ def classify_nb(sentence):
     return classifier.classify(utils.format_sentence(sentence))
 
 
-def classify_svm(sentence):
+def classify_normal_svm(sentence):
     vectorizer = utils.load_model('../../Part1/models/trained_models/svm/vectorizer300k')
     classifier = utils.load_model('../../Part1/models/trained_models/svm/classifier300k')
 

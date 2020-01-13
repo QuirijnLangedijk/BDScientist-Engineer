@@ -24,3 +24,24 @@ def classify_lr(sentence):
         print('error')
 
 
+def classify_svm(sentence):
+    try:
+        spark = utils.create_spark()
+        model = PipelineModel.load("models/trained/svm.model")
+
+        test = spark.createDataFrame([
+            (1, sentence)
+        ], ["id", "text"])
+
+        prediction = model.transform(test)
+        selected = prediction.select("id", "text", "prediction")
+        for row in selected.collect():
+            rid, text, _prediction = row
+            if _prediction == 0:
+                return 'neg'
+            else:
+                return 'pos'
+
+
+    except ValueError:
+        print('error')
