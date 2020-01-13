@@ -142,8 +142,6 @@ app.layout = html.Div(
     Output('map', 'figure'),
     [Input('rating_range', 'value')])
 def update_map(value):
-    ctext(value, "blue")
-
     return make_map(value[0], value[1])
 
 
